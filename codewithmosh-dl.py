@@ -137,8 +137,8 @@ class dl:
                         'outtmpl': self.path+"\\"+self.title[i]+".mp4"
 
                     }
-                    # with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                    #     ydl.download([download_link])
+                     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                         ydl.download([download_link])
     
                 except Exception as e:
                     print(e)
