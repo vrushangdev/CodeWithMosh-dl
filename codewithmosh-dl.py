@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import os
+from os import environ
 import re
 import sys
 import youtube_dl
@@ -14,10 +15,9 @@ class dl:
     def login(self):
         self.course_url = input("Enter Course You Want To Download :    ")
 
-        self.email =input("Enter Your Email :  ")
+        self.email = input('Enter Your Email ? ')
 
-        self.password = input("Enter Your Password :    ")
-
+        self.password = input('Enter Your Password ?')
 
         if self.email and self.password and self.course_url:
             try:
@@ -120,21 +120,41 @@ class dl:
             print(e)
             sys.exit(1)
     def download_video(self,titles,links,folders):
+        handle = open('logs.txt','w')
         self.title =titles
         self.urls = links
         self.path = folders
         for i in range(0,len(self.urls)):
-            video_page = session_requests.get(self.urls[i]).text
-            download_page = BeautifulSoup(video_page,'html.parser')
-            download_link = download_page.find("a",class_="download").get('href')
-            print(download_link)
-            print("Downloading With Youtube-DL\n")
-            ydl_opts ={
-                'outtmpl': self.path+"\\"+self.title[i]+".mp4"
+            try:        
+                video_page = session_requests.get(self.urls[i]).text
+                download_page = BeautifulSoup(video_page,'html.parser')
+                try:
+                    download_link = download_page.find("a",class_="download").get('href')
+                    print(download_link)
+                    print("Downloading With Youtube-DL\n")
+                    # handle.write(download_link)
+                    ydl_opts ={
+                        'outtmpl': self.path+"\\"+self.title[i]+".mp4"
 
-            }
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([download_link])
+                    }
+                    # with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                    #     ydl.download([download_link])
+    
+                except Exception as e:
+                    print(e)
+                    tempPath =  self.path+"\\"+self.title[i]+".html"
+                    handle= open(tempPath,'w')
+                    handle.write(video_page)
+                    handle.close()
+
+                    pass
+            except Exception as e :
+
+                print(self.urls[i])
+                print(e)
+               
+                pass
+
 
 
 dl  = dl()
